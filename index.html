@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nightscout Connect</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#0a0a0a" />
+</head>
+<body>
+  <main id="app">
+    <header>
+      <h1>Nightscout Connect</h1>
+      <p class="subtitle">Real-time glucose monitor</p>
+    </header>
+
+    <section id="status">
+      <div class="card">
+        <h2 id="glucose">-- mmol/L</h2>
+        <p id="trend">No data</p>
+        <p id="updated">Last updated: --</p>
+      </div>
+    </section>
+
+    <section id="settings">
+      <h3>Settings</h3>
+      <label>
+        Nightscout URL:
+        <input id="url" type="text" placeholder="https://rubensnightscout.herokuapp.com" />
+      </label>
+      <label>
+        Low threshold:
+        <input id="low" type="number" step="0.1" value="4.0" />
+      </label>
+      <label>
+        High threshold:
+        <input id="high" type="number" step="0.1" value="10.0" />
+      </label>
+      <button id="save">Save Settings</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
