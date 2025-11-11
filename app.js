@@ -1,73 +1,65 @@
-const glucoseEl = document.getElementById("glucose");
-const trendEl = document.getElementById("trend");
-const updatedEl = document.getElementById("updated");
+const NIGHTSCOUT_URL = "https://rubensnightscout.herokuapp.com"; // Change this
 
-const urlInput = document.getElementById("url");
-const lowInput = document.getElementById("low");
-const highInput = document.getElementById("high");
-const saveButton = document.getElementById("save");
+function mgdlToMmol(mgdl) {
+  return (mgdl / 18.0182).toFixed(1);
+}
 
-let settings = JSON.parse(localStorage.getItem("settings")) || {
-  url: "",
-  low: 4.0,
-  high: 10.0
-};
-
-urlInput.value = settings.url;
-lowInput.value = settings.low;
-highInput.value = settings.high;
-
-saveButton.onclick = () => {
-  settings = {
-    url: urlInput.value.trim(),
-    low: parseFloat(lowInput.value),
-    high: parseFloat(highInput.value)
-  };
-  localStorage.setItem("settings", JSON.stringify(settings));
-  alert("Settings saved!");
-};
-
-// --- Fetch and display latest glucose ---
 async function fetchData() {
-  if (!settings.url) return;
   try {
-    const res = await fetch(`${settings.url}/api/v1/entries.json?count=2`);
+    const res = await fetch(`${NIGHTSCOUT_URL}/api/v1/entries.json?count=1`);
     const data = await res.json();
-    const latest = data[0];
-    const prev = data[1];
-    const glucose = latest.sgv / 18; // mg/dL → mmol/L
-    const delta = latest.sgv - prev.sgv;
-    const rate = delta / ((latest.date - prev.date) / 60000); // mg/dL per min
+    const entry = data[0];
+    const mgdl = entry.sgv;
+    const mmol = mgdlToMmol(mgdl);
+    const direction = entry.direction;
 
-    glucoseEl.textContent = `${glucose.toFixed(1)} mmol/L`;
-    trendEl.textContent = `${delta > 0 ? "↑" : delta < 0 ? "↓" : "→"} ${delta.toFixed(1)} mg/dL`;
-    updatedEl.textContent = `Last updated: ${new Date(latest.dateString).toLocaleTimeString()}`;
+    document.getElementById("glucose-value").textContent = `${mmol} mmol/L`;
+    document.getElementById("trend").textContent = direction;
 
-    // Send message to service worker for background checks
-    if (navigator.serviceWorker.controller) {
-      navigator.serviceWorker.controller.postMessage({
-        type: "update",
-        glucose,
-        rate,
-        settings
-      });
-    }
-  } catch (e) {
-    console.error("Error fetching Nightscout data:", e);
+    const deviceRes = await fetch(`${NIGHTSCOUT_URL}/api/v1/devicestatus.json?count=1`);
+    const deviceData = await deviceRes.json();
+    const battery = deviceData[0]?.pump?.battery?.percent ?? "--";
+    document.getElementById("battery").textContent = `${battery}%`;
+
+    const iob = deviceData[0]?.openaps?.iob?.iob ?? "--";
+    const cob = deviceData[0]?.openaps?.cob?.cob ?? "--";
+    document.getElementById("iob").textContent = `${iob} U`;
+    document.getElementById("cob").textContent = `${cob} g`;
+
+    document.getElementById("connection-status").textContent = "Connected";
+
+    checkThresholds(mmol, direction, battery);
+  } catch (err) {
+    document.getElementById("connection-status").textContent = "Error connecting";
+    console.error(err);
   }
 }
 
-// Refresh every 5 minutes
-setInterval(fetchData, 5 * 60 * 1000);
-fetchData();
-
-// --- PWA & Notification setup ---
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").then(() => {
-    console.log("Service Worker registered.");
-  });
+function checkThresholds(mmol, direction, battery) {
+  const mmolNum = parseFloat(mmol);
+  if (mmolNum < 3.9) sendNotification("Low blood sugar!", `Your BG is ${mmol} mmol/L`);
+  if (mmolNum > 10.0) sendNotification("High blood sugar!", `Your BG is ${mmol} mmol/L`);
+  if (battery !== "--" && battery < 20)
+    sendNotification("Pump battery low", `Battery at ${battery}%`);
 }
 
-if (Notification.permission !== "granted") {
+function sendNotification(title, body) {
+  if (Notification.permission === "granted") {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      reg?.showNotification(title, {
+        body,
+        icon: "https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/master/static/images/apple-touch-icon-180x180.png"
+      });
+    });
+  }
+}
+
+// Periodic updates
+fetchData();
+setInterval(fetchData, 60000);
+
+// Service Worker registration
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
   Notification.requestPermission();
 }
