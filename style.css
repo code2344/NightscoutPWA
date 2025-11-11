@@ -62,4 +62,13 @@ h1 { margin: 0; font-size: 1.5em; }
   cursor: pointer;
 }
 .chart-controls button.active { background-color: #006edc; }
-.chart-section { margin: 10px; }
+.chart-section {
+  margin: 10px;
+  height: 200px; /* limit chart height */
+  position: relative;
+}
+
+#glucose-chart {
+  height: 100% !important; /* make canvas fill the section height */
+  width: 100% !important;
+}
