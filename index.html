@@ -2,44 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nightscout Connect</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
-  <meta name="theme-color" content="#0a0a0a" />
-</head>
-<body>
-  <main id="app">
-    <header>
-      <h1>Nightscout Connect</h1>
-      <p class="subtitle">Real-time glucose monitor</p>
-    </header>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a84ff">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <title>Nightscout iOS PWA</title>
 
-    <section id="status">
-      <div class="card">
-        <h2 id="glucose">-- mmol/L</h2>
-        <p id="trend">No data</p>
-        <p id="updated">Last updated: --</p>
-      </div>
+  <!-- Apple Touch Icons from Nightscout GitHub -->
+  <link rel="apple-touch-icon" sizes="57x57" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-180x180.png">
+</head>
+
+<body>
+  <header>
+    <h1>Nightscout</h1>
+    <p id="connection-status">Connecting...</p>
+  </header>
+
+  <main>
+    <section class="glucose">
+      <h2 id="glucose-value">-- mmol/L</h2>
+      <p id="trend">--</p>
     </section>
 
-    <section id="settings">
-      <h3>Settings</h3>
-      <label>
-        Nightscout URL:
-        <input id="url" type="text" placeholder="https://rubensnightscout.herokuapp.com" />
-      </label>
-      <label>
-        Low threshold:
-        <input id="low" type="number" step="0.1" value="4.0" />
-      </label>
-      <label>
-        High threshold:
-        <input id="high" type="number" step="0.1" value="10.0" />
-      </label>
-      <button id="save">Save Settings</button>
+    <section class="details">
+      <div><span>IOB:</span> <strong id="iob">-- U</strong></div>
+      <div><span>COB:</span> <strong id="cob">-- g</strong></div>
+      <div><span>Pump Battery:</span> <strong id="battery">--%</strong></div>
     </section>
   </main>
+
+  <footer>
+    <p>Nightscout iOS PWA — modern UI with smart alerts</p>
+  </footer>
 
   <script src="app.js"></script>
 </body>
