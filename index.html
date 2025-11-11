@@ -24,6 +24,7 @@
   <header>
     <h1>Nightscout</h1>
     <p id="connection-status">Connecting...</p>
+    <button id="settings-toggle">⚙️ Settings</button>
   </header>
 
   <main>
@@ -36,6 +37,30 @@
       <div><span>IOB:</span> <strong id="iob">-- U</strong></div>
       <div><span>COB:</span> <strong id="cob">-- g</strong></div>
       <div><span>Pump Battery:</span> <strong id="battery">--%</strong></div>
+    </section>
+
+    <!-- Settings Panel -->
+    <section id="settings-panel" class="settings hidden">
+      <h3>Settings</h3>
+      <label>
+        Nightscout URL:
+        <input type="text" id="ns-url" placeholder="https://your-nightscout.herokuapp.com">
+      </label>
+      <label>
+        Low BG Threshold (mmol/L):
+        <input type="number" id="low-threshold" step="0.1" min="0">
+      </label>
+      <label>
+        High BG Threshold (mmol/L):
+        <input type="number" id="high-threshold" step="0.1" min="0">
+      </label>
+      <fieldset>
+        <legend>Notifications</legend>
+        <label><input type="checkbox" id="notif-low"> Low BG</label>
+        <label><input type="checkbox" id="notif-high"> High BG</label>
+        <label><input type="checkbox" id="notif-battery"> Pump Battery</label>
+      </fieldset>
+      <button id="save-settings">Save Settings</button>
     </section>
   </main>
 
