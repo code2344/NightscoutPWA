@@ -1,45 +1,80 @@
-const NIGHTSCOUT_URL = "https://rubensnightscout.herokuapp.com"; // Change this
+// Default settings
+const defaultSettings = {
+  nsUrl: "https://your-nightscout-instance.herokuapp.com",
+  low: 3.9,
+  high: 10.0,
+  notifLow: true,
+  notifHigh: true,
+  notifBattery: true
+};
 
-function mgdlToMmol(mgdl) {
-  return (mgdl / 18.0182).toFixed(1);
-}
+// Load or create settings in localStorage
+let settings = JSON.parse(localStorage.getItem("nsSettings")) || defaultSettings;
 
+// Elements
+const settingsPanel = document.getElementById("settings-panel");
+const toggleBtn = document.getElementById("settings-toggle");
+const saveBtn = document.getElementById("save-settings");
+
+// Populate settings inputs
+document.getElementById("ns-url").value = settings.nsUrl;
+document.getElementById("low-threshold").value = settings.low;
+document.getElementById("high-threshold").value = settings.high;
+document.getElementById("notif-low").checked = settings.notifLow;
+document.getElementById("notif-high").checked = settings.notifHigh;
+document.getElementById("notif-battery").checked = settings.notifBattery;
+
+// Toggle panel
+toggleBtn.addEventListener("click", () => settingsPanel.classList.toggle("hidden"));
+
+// Save settings
+saveBtn.addEventListener("click", () => {
+  settings.nsUrl = document.getElementById("ns-url").value;
+  settings.low = parseFloat(document.getElementById("low-threshold").value);
+  settings.high = parseFloat(document.getElementById("high-threshold").value);
+  settings.notifLow = document.getElementById("notif-low").checked;
+  settings.notifHigh = document.getElementById("notif-high").checked;
+  settings.notifBattery = document.getElementById("notif-battery").checked;
+
+  localStorage.setItem("nsSettings", JSON.stringify(settings));
+  alert("Settings saved!");
+});
+
+// BG conversion
+function mgdlToMmol(mgdl) { return (mgdl / 18.0182).toFixed(1); }
+
+// Fetch data
 async function fetchData() {
   try {
-    const res = await fetch(`${NIGHTSCOUT_URL}/api/v1/entries.json?count=1`);
+    const res = await fetch(`${settings.nsUrl}/api/v1/entries.json?count=1`);
     const data = await res.json();
     const entry = data[0];
-    const mgdl = entry.sgv;
-    const mmol = mgdlToMmol(mgdl);
-    const direction = entry.direction;
+    const mmol = mgdlToMmol(entry.sgv);
 
     document.getElementById("glucose-value").textContent = `${mmol} mmol/L`;
-    document.getElementById("trend").textContent = direction;
+    document.getElementById("trend").textContent = entry.direction;
 
-    const deviceRes = await fetch(`${NIGHTSCOUT_URL}/api/v1/devicestatus.json?count=1`);
-    const deviceData = await deviceRes.json();
-    const battery = deviceData[0]?.pump?.battery?.percent ?? "--";
+    const deviceRes = await fetch(`${settings.nsUrl}/api/v1/devicestatus.json?count=1`);
+    const device = (await deviceRes.json())[0];
+    const battery = device?.pump?.battery?.percent ?? "--";
     document.getElementById("battery").textContent = `${battery}%`;
-
-    const iob = deviceData[0]?.openaps?.iob?.iob ?? "--";
-    const cob = deviceData[0]?.openaps?.cob?.cob ?? "--";
-    document.getElementById("iob").textContent = `${iob} U`;
-    document.getElementById("cob").textContent = `${cob} g`;
+    document.getElementById("iob").textContent = `${device?.openaps?.iob?.iob ?? "--"} U`;
+    document.getElementById("cob").textContent = `${device?.openaps?.cob?.cob ?? "--"} g`;
 
     document.getElementById("connection-status").textContent = "Connected";
 
-    checkThresholds(mmol, direction, battery);
+    checkThresholds(parseFloat(mmol), entry.direction, battery);
   } catch (err) {
     document.getElementById("connection-status").textContent = "Error connecting";
     console.error(err);
   }
 }
 
+// Notifications
 function checkThresholds(mmol, direction, battery) {
-  const mmolNum = parseFloat(mmol);
-  if (mmolNum < 3.9) sendNotification("Low blood sugar!", `Your BG is ${mmol} mmol/L`);
-  if (mmolNum > 10.0) sendNotification("High blood sugar!", `Your BG is ${mmol} mmol/L`);
-  if (battery !== "--" && battery < 20)
+  if (settings.notifLow && mmol < settings.low) sendNotification("Low BG!", `BG: ${mmol} mmol/L`);
+  if (settings.notifHigh && mmol > settings.high) sendNotification("High BG!", `BG: ${mmol} mmol/L`);
+  if (settings.notifBattery && battery !== "--" && battery < 20)
     sendNotification("Pump battery low", `Battery at ${battery}%`);
 }
 
@@ -54,7 +89,7 @@ function sendNotification(title, body) {
   }
 }
 
-// Periodic updates
+// Start polling
 fetchData();
 setInterval(fetchData, 60000);
 
