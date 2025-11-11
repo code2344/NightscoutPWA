@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <title>Nightscout iOS PWA</title>
 
-  <!-- Apple Touch Icons from Nightscout GitHub -->
+  <!-- Apple Touch Icons -->
   <link rel="apple-touch-icon" sizes="57x57" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-72x72.png">
@@ -18,6 +18,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-144x144.png">
   <link rel="apple-touch-icon" sizes="152x152" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-152x152.png">
   <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/nightscout/cgm-remote-monitor/91cd601038a3bce00f92655cc6b1cc02fa3589d3/static/images/apple-touch-icon-180x180.png">
+
 </head>
 
 <body>
@@ -62,12 +63,26 @@
       </fieldset>
       <button id="save-settings">Save Settings</button>
     </section>
+
+    <!-- Chart Section -->
+    <section class="chart-section">
+      <h3>Glucose Trend</h3>
+      <div class="chart-controls">
+        <button data-hours="4">4h</button>
+        <button data-hours="6">6h</button>
+        <button data-hours="12">12h</button>
+        <button data-hours="24" class="active">24h</button>
+      </div>
+      <canvas id="glucose-chart" width="400" height="150"></canvas>
+    </section>
   </main>
 
   <footer>
     <p>Nightscout iOS PWA — modern UI with smart alerts</p>
   </footer>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
