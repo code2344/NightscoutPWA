@@ -54,3 +54,36 @@ footer {
   font-size: 0.8em;
   margin-bottom: 10px;
 }
+.settings {
+  background: rgba(28,28,30,0.9);
+  padding: 15px;
+  border-radius: 15px;
+  margin: 10px;
+  text-align: left;
+}
+
+.settings label, .settings legend {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+.settings input[type="text"], .settings input[type="number"] {
+  width: 100%;
+  padding: 5px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 3px;
+}
+
+.settings.hidden {
+  display: none;
+}
+
+#settings-toggle {
+  background: none;
+  border: none;
+  color: #0a84ff;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin-left: 10px;
+}
