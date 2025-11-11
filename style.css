@@ -1,59 +1,25 @@
 body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f2f2f7;
+  color: #1c1c1e;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-  background: linear-gradient(180deg, #1c1c1e, #2c2c2e);
-  color: white;
-  text-align: center;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding: 0;
 }
 
 header {
-  padding: 20px;
-  backdrop-filter: blur(20px);
-  background: rgba(44, 44, 46, 0.5);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-h1 {
-  font-weight: 700;
-  font-size: 1.5em;
-  margin: 0;
-}
-
-#connection-status {
-  color: #aaa;
-  font-size: 0.9em;
-}
-
-main {
-  flex: 1;
+  background: #0a84ff;
+  color: white;
+  padding: 15px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2em;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.glucose h2 {
-  font-size: 3em;
-  font-weight: 700;
-}
+h1 { margin: 0; font-size: 1.5em; }
+.glucose { text-align: center; margin: 15px 0; }
+.glucose h2 { font-size: 3em; margin: 0; }
+.details { display: flex; justify-content: space-around; margin: 10px 0; }
 
-.glucose p {
-  font-size: 1.2em;
-  opacity: 0.8;
-}
-
-.details div {
-  margin: 5px 0;
-}
-
-footer {
-  opacity: 0.6;
-  font-size: 0.8em;
-  margin-bottom: 10px;
-}
 .settings {
   background: rgba(28,28,30,0.9);
   padding: 15px;
@@ -75,15 +41,25 @@ footer {
   margin-top: 3px;
 }
 
-.settings.hidden {
-  display: none;
-}
+.settings.hidden { display: none; }
 
 #settings-toggle {
   background: none;
   border: none;
-  color: #0a84ff;
+  color: white;
   font-size: 1.5em;
   cursor: pointer;
-  margin-left: 10px;
 }
+
+.chart-controls { margin-bottom: 5px; }
+.chart-controls button {
+  margin-right: 5px;
+  background-color: #0a84ff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.chart-controls button.active { background-color: #006edc; }
+.chart-section { margin: 10px; }
